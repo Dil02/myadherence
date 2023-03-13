@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "776735942230",
+    "project_id": "myadherence",
+    "storage_bucket": "myadherence.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776735942230:android:9ccab4d3d2708524b0bdf7",
+        "android_client_info": {
+          "package_name": "com.example.myadherence"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776735942230-mimre9iejlamomm3rnj2lptdidptvmqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSWm2bHWV24sDjv5qfxTtlNKKaMtNIB1c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776735942230-mimre9iejlamomm3rnj2lptdidptvmqs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
