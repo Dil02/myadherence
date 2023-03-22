@@ -20,9 +20,9 @@ import androidx.navigation.NavController
 
 // Create Account screen composable:
 @Composable
-fun CreateAccountScreen(navController: NavController,
-    viewModel: CreateAccountViewModel
-    //viewModel: CreateAccountViewModel = hiltViewModel()
+fun CreateAccountScreen(
+    navController: NavController,
+    viewModel: CreateAccountViewModel = hiltViewModel()
 ){
     val uiState by viewModel.uiState
 

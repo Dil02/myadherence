@@ -22,7 +22,8 @@ class AccountServiceImpl @Inject constructor() : AccountService {
                 val userID = Firebase.auth.currentUser?.uid
                 if (userID != null) {
                     val data = hashMapOf(
-                        "nickname" to nickname
+                        "nickname" to nickname,
+                        "adherenceScore" to 0
                     )
                     Firebase.firestore.collection("users").document(userID).set(data)
                 }
@@ -50,5 +51,9 @@ class AccountServiceImpl @Inject constructor() : AccountService {
             return User(id,email,"")
         }
         return User("There was no user","There was no user","There was no user")
+    }
+
+    override fun getUserID() : String {
+        return Firebase.auth.currentUser?.uid.orEmpty()
     }
 }

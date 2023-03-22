@@ -9,4 +9,5 @@ interface AccountService {
     fun loggedIn(): Boolean
     fun signOut()
     fun getUserDetails(): User
+    fun getUserID(): String
 }

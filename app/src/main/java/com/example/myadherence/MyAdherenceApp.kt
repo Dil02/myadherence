@@ -22,11 +22,15 @@ import com.example.myadherence.screens.create_account.CreateAccountScreen
 import com.example.myadherence.screens.create_account.CreateAccountViewModel
 import com.example.myadherence.screens.home.HomeScreen
 import com.example.myadherence.screens.home.HomeViewModel
+import com.example.myadherence.screens.leaderboard.Leaderboard
 import com.example.myadherence.screens.login.LoginScreen
 import com.example.myadherence.screens.login.LoginViewModel
+import com.example.myadherence.screens.medication.MedicationScreen
 import com.example.myadherence.screens.welcome.WelcomeScreen
 import com.example.myadherence.screens.welcome.WelcomeViewModel
 import com.example.myadherence.ui.theme.MyAdherenceTheme
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.HiltAndroidApp
 
 
@@ -64,19 +68,25 @@ fun Navigation() {
             CreateAccountScreen(navController = navController, viewModel)
         }
         composable(route = HOME_SCREEN) {
-            HomeScreen(navController = navController, viewModel1)
+            HomeScreen(navController = navController,viewModel1)
         }
         composable(route = LOGIN_SCREEN) {
             LoginScreen(navController = navController, viewModel2)
         }
         composable(route = WELCOME_SCREEN) {
-            if(viewModel3.loggedIn()) {
+            if(Firebase.auth.currentUser?.uid != null) {
                 HomeScreen(navController,viewModel1)
             }
             else
             {
                 WelcomeScreen(navController = navController, viewModel3)
             }
+        }
+        composable(route = "Leaderboard") {
+            Leaderboard(navController = navController)
+        }
+        composable(route = "Medication") {
+            MedicationScreen(navController = navController)
         }
     }
 }
