@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavController
 import com.example.myadherence.CREATE_ACCOUNT_SCREEN
 import com.example.myadherence.HOME_SCREEN
+import com.example.myadherence.LOGIN_SCREEN
 import com.example.myadherence.model.service.AccountService
 import com.example.myadherence.screens.MyAdherenceViewModel
 import com.example.myadherence.screens.home.HomeScreen
@@ -41,7 +42,7 @@ class LoginViewModel @Inject constructor(
             if(error==null)
             {
                 println("Logged in successfully")
-                navController.navigate(route = HOME_SCREEN)
+                navController.navigate(route = HOME_SCREEN) {popUpTo(LOGIN_SCREEN) {inclusive=true} }
             }
             else
             {

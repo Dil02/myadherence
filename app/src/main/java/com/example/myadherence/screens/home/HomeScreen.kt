@@ -8,23 +8,17 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.myadherence.ui.theme.MyAdherenceTheme
 
 @Composable
 fun HomeScreen(
@@ -32,6 +26,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ){
 
+    // Declares and initialises the state observed by the composable.
     val medicines = viewModel.medicines
 
     Column(
@@ -81,7 +76,7 @@ fun HomeScreen(
 
         for(medicine in medicines.values.toList()) {
             Button(
-                onClick = { viewModel.viewMedication(navController) },
+                onClick = { viewModel.viewMedication(navController,medicine.id) },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                 border = BorderStroke(0.1.dp,Color.Black)
             ) {
@@ -91,16 +86,16 @@ fun HomeScreen(
                     color = Color.Black
                 )
             }
-            Text(
-                text = medicine.progress.toString() + "%",
-                fontSize = 17.sp
-            )
         }
 
     }
 
     DisposableEffect(viewModel) {
+        // Calls a function to create a listener when the composable first composes.
         viewModel.addListener()
+
+        /* Called when the composable is no longer needed, for example, changing screen.
+           Removing the listener frees up resources which are no longer required.*/
         onDispose { viewModel.removeListener() }
     }
 }

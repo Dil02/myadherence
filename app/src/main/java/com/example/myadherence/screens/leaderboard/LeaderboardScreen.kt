@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import com.example.myadherence.screens.login.LoginViewModel
 
 @Composable
-fun Leaderboard(
+fun LeaderboardScreen(
     navController: NavController,
     viewModel: LeaderboardViewModel = hiltViewModel()
 )

@@ -12,9 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,7 +20,7 @@ import com.example.myadherence.screens.create_account.CreateAccountScreen
 import com.example.myadherence.screens.create_account.CreateAccountViewModel
 import com.example.myadherence.screens.home.HomeScreen
 import com.example.myadherence.screens.home.HomeViewModel
-import com.example.myadherence.screens.leaderboard.Leaderboard
+import com.example.myadherence.screens.leaderboard.LeaderboardScreen
 import com.example.myadherence.screens.login.LoginScreen
 import com.example.myadherence.screens.login.LoginViewModel
 import com.example.myadherence.screens.medication.MedicationScreen
@@ -56,37 +54,43 @@ fun Navigation() {
 
     // Because of the way I am doing the hiltViewModel the home screen has to call getUserDetails everytime it recomposes.
     // Defining the relevant ViewModels:
-    val viewModel = hiltViewModel<CreateAccountViewModel>()
-    val viewModel1 = hiltViewModel<HomeViewModel>()
-    val viewModel2 = hiltViewModel<LoginViewModel>()
-    val viewModel3 = hiltViewModel<WelcomeViewModel>()
+//    val viewModel = hiltViewModel<CreateAccountViewModel>()
+//    val viewModel1 = hiltViewModel<HomeViewModel>()
+//    val viewModel2 = hiltViewModel<LoginViewModel>()
+//    val viewModel3 = hiltViewModel<WelcomeViewModel>()
 
     // NavHost links the NavController with the navigation graph.
     NavHost(navController = navController, startDestination = WELCOME_SCREEN) {
         // This navigation graph states the composable functions that can be navigated to:
         composable(route = CREATE_ACCOUNT_SCREEN) {
-            CreateAccountScreen(navController = navController, viewModel)
+            CreateAccountScreen(navController = navController)
         }
         composable(route = HOME_SCREEN) {
-            HomeScreen(navController = navController,viewModel1)
+            HomeScreen(navController = navController)
         }
         composable(route = LOGIN_SCREEN) {
-            LoginScreen(navController = navController, viewModel2)
+            LoginScreen(navController = navController)
         }
         composable(route = WELCOME_SCREEN) {
             if(Firebase.auth.currentUser?.uid != null) {
-                HomeScreen(navController,viewModel1)
+                HomeScreen(navController)
+                //HomeScreen(navController,viewModel1)
             }
             else
             {
-                WelcomeScreen(navController = navController, viewModel3)
+                WelcomeScreen(navController = navController)
             }
         }
-        composable(route = "Leaderboard") {
-            Leaderboard(navController = navController)
+        composable(route = LEADERBOARD_SCREEN) {
+            LeaderboardScreen(navController = navController)
         }
-        composable(route = "Medication") {
-            MedicationScreen(navController = navController)
+        // This composable contains an argument placeholder ('{medicationID}') in the route.
+        composable(route = "$MEDICATION_SCREEN/{medicationID}", arguments = listOf(
+            navArgument("medicationID") {
+                type = NavType.StringType // Defines the type of the single argument
+            }
+        ) ) { entry -> //Extracts the argument from the NavBackStackEntry
+            MedicationScreen(navController = navController, medicationID = entry.arguments?.getString("medicationID"))
         }
     }
 }
