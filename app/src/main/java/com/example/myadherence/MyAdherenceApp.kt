@@ -16,6 +16,7 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myadherence.screens.NFCViewModel
 import com.example.myadherence.screens.create_account.CreateAccountScreen
 import com.example.myadherence.screens.create_account.CreateAccountViewModel
 import com.example.myadherence.screens.home.HomeScreen
@@ -34,21 +35,21 @@ import dagger.hilt.android.HiltAndroidApp
 
 // Main app composable:
 @Composable
-fun MyAdherenceApp(){
+fun MyAdherenceApp(tempViewModel: NFCViewModel){
     MyAdherenceTheme {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            Navigation()
+            Navigation(tempViewModel)
         }
     }
 }
 
 // Navigation composable:
 @Composable
-fun Navigation() {
+fun Navigation(tempViewModel: NFCViewModel) {
     // NavController is the API used for navigation.
     val navController = rememberNavController()
 
@@ -66,14 +67,14 @@ fun Navigation() {
             CreateAccountScreen(navController = navController)
         }
         composable(route = HOME_SCREEN) {
-            HomeScreen(navController = navController)
+            HomeScreen(navController = navController, tempViewModel = tempViewModel)
         }
         composable(route = LOGIN_SCREEN) {
             LoginScreen(navController = navController)
         }
         composable(route = WELCOME_SCREEN) {
             if(Firebase.auth.currentUser?.uid != null) {
-                HomeScreen(navController)
+                HomeScreen(navController,tempViewModel)
                 //HomeScreen(navController,viewModel1)
             }
             else
@@ -94,9 +95,3 @@ fun Navigation() {
         }
     }
 }
-
-
-
-
-
-

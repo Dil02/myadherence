@@ -1,10 +1,12 @@
 package com.example.myadherence.screens.home
 
+import android.nfc.Tag
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.myadherence.LEADERBOARD_SCREEN
 import com.example.myadherence.MEDICATION_SCREEN
+import com.example.myadherence.MyAdherenceActivity
 import com.example.myadherence.WELCOME_SCREEN
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.service.AccountService
@@ -69,4 +71,21 @@ class HomeViewModel @Inject constructor(
         navController.navigate(route = "$MEDICATION_SCREEN/$medicationID")
     }
 
+    // This function adds a Medication to the application.
+    fun addMedication(newString: String)
+    {
+        val properties = newString.split(",")
+        if(properties.size==5)
+        {
+            val id = ""
+            val name = properties.get(0)
+            val knownSideEffects = properties.get(1)
+            val about = properties.get(2)
+            val pillCount = properties.get(3).toInt()
+            val currentPillCount = properties.get(4).toInt()
+            val progress = 0
+
+            storageService.addMedication(Medicine(id,name,knownSideEffects,about,pillCount,currentPillCount,progress))
+        }
+    }
 }

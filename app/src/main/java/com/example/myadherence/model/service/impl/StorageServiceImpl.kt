@@ -89,6 +89,36 @@ class StorageServiceImpl @Inject constructor() : StorageService {
                 }
         }
     }
+
+    // This function adds a new Medicine document based on the Medicine object provided.
+    override fun addMedication(
+        medication: Medicine
+    ) {
+        val userID = Firebase.auth.currentUser?.uid
+        if(userID != null)
+        {
+            Firebase.firestore.collection("medicines").document(userID)
+                .collection("Medicine").add(medication)
+                .addOnSuccessListener {
+                    println("Written successfully")
+                }
+        }
+    }
+
+    // This function deletes a Medicine document based on the medicationID provided.
+    override fun deleteMedication(
+        medicationID: String
+    ) {
+        val userID = Firebase.auth.currentUser?.uid
+        if(userID != null)
+        {
+            Firebase.firestore.collection("medicines").document(userID)
+                .collection("Medicine").document(medicationID).delete()
+                .addOnSuccessListener {
+                    println("Deleted successfully")
+                }
+        }
+    }
 }
 
 /* So essentially you do not modify the local state, instead you make changes (write) to the collection and documents on Firestore,

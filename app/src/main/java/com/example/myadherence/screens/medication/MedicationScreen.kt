@@ -49,7 +49,7 @@ fun MedicationScreen(
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Button(onClick = {viewModel.deleteMedication()}) {
+            Button(onClick = {viewModel.deleteMedication(navController)}) {
                 Text(
                     text = "Delete",
                     fontSize = 16.sp

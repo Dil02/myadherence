@@ -3,9 +3,11 @@ package com.example.myadherence.screens.medication
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.myadherence.HOME_SCREEN
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.service.StorageService
 import com.example.myadherence.screens.MyAdherenceViewModel
+import com.example.myadherence.screens.home.HomeScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -67,9 +69,9 @@ class MedicationViewModel @Inject constructor(
     }
 
     // This function instructs the storage service to delete a Medicine object from Cloud Firestore.
-    fun deleteMedication() {
-        // DON'T FORGET TO COMPLETE!!!!!!!!
-        println("Delete medication not implemented!")
+    fun deleteMedication(navController: NavController) {
+        storageService.deleteMedication(medication.value.id)
+        navController.navigate(HOME_SCREEN)
     }
 
 }

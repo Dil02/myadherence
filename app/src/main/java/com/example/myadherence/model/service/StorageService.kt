@@ -8,4 +8,6 @@ interface StorageService {
     fun removeListener()
     fun getMedication(medicationID: String, onSuccess: (Medicine) -> Unit)
     fun updateMedication(medication: Medicine)
+    fun addMedication(medication: Medicine)
+    fun deleteMedication(medicationID: String)
 }

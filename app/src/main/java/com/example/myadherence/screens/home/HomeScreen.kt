@@ -19,15 +19,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.myadherence.screens.NFCViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavController,
+    tempViewModel: NFCViewModel,
     viewModel: HomeViewModel = hiltViewModel()
 ){
 
     // Declares and initialises the state observed by the composable.
     val medicines = viewModel.medicines
+
+    //DELETE:
+    val tempString = tempViewModel.inputText
 
     Column(
         modifier = Modifier.padding(32.dp),
@@ -85,6 +90,15 @@ fun HomeScreen(
                     fontSize = 18.sp,
                     color = Color.Black
                 )
+            }
+        }
+
+        Text(text=tempString.value, fontSize = 23.sp)
+
+        if(!tempString.value.equals(""))
+        {
+            Button(onClick = { viewModel.addMedication(tempString.value)}) {
+                Text(text = "Add medication", fontSize = 16.sp)
             }
         }
 
