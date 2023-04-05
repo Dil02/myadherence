@@ -3,7 +3,10 @@ package com.example.myadherence.screens.medication
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.myadherence.HOME_SCREEN
+import com.example.myadherence.MEDICATION_DOSES_SCREEN
+import com.example.myadherence.MEDICATION_SCREEN
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.service.StorageService
 import com.example.myadherence.screens.MyAdherenceViewModel
@@ -72,6 +75,11 @@ class MedicationViewModel @Inject constructor(
     fun deleteMedication(navController: NavController) {
         storageService.deleteMedication(medication.value.id)
         navController.navigate(HOME_SCREEN)
+    }
+
+    // This function navigates to the Medication Doses screen where the user can view all the doses of a particular medication.
+    fun goToMedicationDoses(navController: NavController, medicationID: String, medicationName: String) {
+        navController.navigate(route = "$MEDICATION_DOSES_SCREEN/$medicationID/$medicationName")
     }
 
 }

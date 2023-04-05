@@ -64,7 +64,7 @@ fun MedicationScreen(
             }
         }
 
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { viewModel.goToMedicationDoses(navController, medication.value.id,medication.value.name) }) {
             Text(
                 text = "View Doses",
                 fontSize = 20.sp

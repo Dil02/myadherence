@@ -19,12 +19,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myadherence.screens.NFCViewModel
 import com.example.myadherence.screens.create_account.CreateAccountScreen
 import com.example.myadherence.screens.create_account.CreateAccountViewModel
+import com.example.myadherence.screens.dose.DoseScreen
 import com.example.myadherence.screens.home.HomeScreen
 import com.example.myadherence.screens.home.HomeViewModel
 import com.example.myadherence.screens.leaderboard.LeaderboardScreen
 import com.example.myadherence.screens.login.LoginScreen
 import com.example.myadherence.screens.login.LoginViewModel
 import com.example.myadherence.screens.medication.MedicationScreen
+import com.example.myadherence.screens.medication_doses.MedicationDosesScreen
 import com.example.myadherence.screens.welcome.WelcomeScreen
 import com.example.myadherence.screens.welcome.WelcomeViewModel
 import com.example.myadherence.ui.theme.MyAdherenceTheme
@@ -82,9 +84,11 @@ fun Navigation(tempViewModel: NFCViewModel) {
                 WelcomeScreen(navController = navController)
             }
         }
+
         composable(route = LEADERBOARD_SCREEN) {
             LeaderboardScreen(navController = navController)
         }
+
         // This composable contains an argument placeholder ('{medicationID}') in the route.
         composable(route = "$MEDICATION_SCREEN/{medicationID}", arguments = listOf(
             navArgument("medicationID") {
@@ -92,6 +96,27 @@ fun Navigation(tempViewModel: NFCViewModel) {
             }
         ) ) { entry -> //Extracts the argument from the NavBackStackEntry
             MedicationScreen(navController = navController, medicationID = entry.arguments?.getString("medicationID"))
+        }
+
+        composable(route = "$MEDICATION_DOSES_SCREEN/{medicationID}/{medicationName}", arguments = listOf(
+            navArgument("medicationID") { type = NavType.StringType },
+            navArgument("medicationName") { type = NavType.StringType }
+        )) {entry ->
+            MedicationDosesScreen(
+                navController = navController,
+                medicationID = entry.arguments?.getString("medicationID"),
+                medicationName = entry.arguments?.getString("medicationName")
+            )
+        }
+        composable(route = "$DOSE_SCREEN/{medicationID}/{medicationName}/{doseID}", arguments = listOf(
+            navArgument("medicationID") { type = NavType.StringType },
+            navArgument("medicationName") { type = NavType.StringType},
+            navArgument("doseID") { type = NavType.StringType}
+        )) {entry ->
+            DoseScreen(
+                medicationID = entry.arguments?.getString("medicationID") ,
+                medicationName = entry.arguments?.getString("medicationName") ,
+                doseID = entry.arguments?.getString("doseID"))
         }
     }
 }

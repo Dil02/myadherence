@@ -1,5 +1,6 @@
 package com.example.myadherence.model.service.impl
 
+import com.example.myadherence.model.Dose
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.User
 import com.example.myadherence.model.service.StorageService
@@ -119,6 +120,77 @@ class StorageServiceImpl @Inject constructor() : StorageService {
                 }
         }
     }
+
+    // This function fetches ALL the Dose documents based on the medicationID provided.
+    override fun getDoses(
+        medicationID: String,
+        onSuccess: (ArrayList<Dose>) -> Unit
+    ) {
+        var doses = ArrayList<Dose>()
+
+        Firebase.firestore.collection("doses").document(medicationID)
+            .collection("Doses").get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    /* Each document in the collection is transformed into a Dose object and then added
+                       to the 'doses' arraylist.*/
+                    doses.add(document.toObject<Dose>()?.copy(id = document.id) as Dose)
+                }
+                onSuccess(doses ?: ArrayList<Dose>()) // Returns an arraylist containing all the documents as Dose objects.
+            }
+    }
+
+    // This function fetches a SINGLE Dose document based on the medicationID and doseID provided.
+    override fun getDose(
+        medicationID: String,
+        doseID: String,
+        onSuccess: (Dose) -> Unit
+    ) {
+        Firebase.firestore.collection("doses").document(medicationID)
+            .collection("Doses").document(doseID).get()
+            .addOnSuccessListener { document ->
+                // Transforms a single 'Dose' document to an object of the Dose type.
+                val dose = document.toObject<Dose>()?.copy(id = document.id)
+                onSuccess(dose ?: Dose()) // Returns the dose object to where the getDose function was called.
+            }
+    }
+
+    // This function updates a Dose document based on the Dose object provided.
+    override fun updateDose(
+        medicationID: String,
+        dose : Dose
+    ) {
+        Firebase.firestore.collection("doses").document(medicationID)
+            .collection("Doses").document(dose.id).set(dose)
+            .addOnSuccessListener {
+                println("Written Successfully")
+            }
+    }
+
+    // This function deletes a Dose document based on the doseID provided.
+    override fun deleteDose(
+        medicationID: String,
+        doseID : String
+    ) {
+        Firebase.firestore.collection("doses").document(medicationID)
+            .collection("Doses").document(doseID).delete()
+            .addOnSuccessListener {
+                println("Deleted Successfully")
+            }
+    }
+
+    // This function adds a new Dose document based on the Dose object provided.
+    override fun addDose(
+        medicationID: String,
+        dose : Dose
+    ) {
+        Firebase.firestore.collection("doses").document(medicationID)
+            .collection("Doses").add(dose)
+            .addOnSuccessListener {
+                println("Written Successfully")
+            }
+    }
+
 }
 
 /* So essentially you do not modify the local state, instead you make changes (write) to the collection and documents on Firestore,
