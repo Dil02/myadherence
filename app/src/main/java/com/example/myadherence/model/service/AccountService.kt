@@ -1,5 +1,6 @@
 package com.example.myadherence.model.service
 
+import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.User
 
 // Defines an interface:
@@ -8,6 +9,6 @@ interface AccountService {
     fun authenticate(email: String, password: String, onResult: (Throwable?) -> Unit)
     fun loggedIn(): Boolean
     fun signOut()
-    fun getUserDetails(): User
+    fun getUserDetails(onSuccess: (User) -> Unit)
     fun getUserID(): String
 }

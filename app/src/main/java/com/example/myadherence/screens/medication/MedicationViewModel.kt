@@ -14,6 +14,7 @@ import com.example.myadherence.screens.home.HomeScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @HiltViewModel
 class MedicationViewModel @Inject constructor(
@@ -49,11 +50,20 @@ class MedicationViewModel @Inject constructor(
     // This function updates the 'currentPillCount' property of the medication state as the user enters a value.
     fun onCurrentPillCountChange(newValue: String) {
         medication.value = medication.value.copy(currentPillCount = newValue.toIntOrNull() ?: 0)
+        updateProgress()
     }
 
     // This function updates the 'pillCount' property of the medication state as the user enters a value.
     fun onPillCountChange(newValue: String) {
         medication.value = medication.value.copy(pillCount = newValue.toIntOrNull() ?: 0)
+        updateProgress()
+    }
+
+    // This private function updates the 'progress' property of the medication state.
+    private fun updateProgress()
+    {
+        medication.value = medication.value.copy(
+            progress = ((medication.value.currentPillCount.toDouble()/medication.value.pillCount.toDouble())*100).roundToInt())
     }
 
     // This function instructs the storage service to save the changes made to a Medicine object to Cloud Firestore.

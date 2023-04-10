@@ -1,7 +1,9 @@
 package com.example.myadherence.screens.home
 
 import android.nfc.Tag
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.myadherence.LEADERBOARD_SCREEN
@@ -9,6 +11,7 @@ import com.example.myadherence.MEDICATION_SCREEN
 import com.example.myadherence.MyAdherenceActivity
 import com.example.myadherence.WELCOME_SCREEN
 import com.example.myadherence.model.Medicine
+import com.example.myadherence.model.User
 import com.example.myadherence.model.service.AccountService
 import com.example.myadherence.model.service.StorageService
 import com.example.myadherence.screens.MyAdherenceViewModel
@@ -86,6 +89,18 @@ class HomeViewModel @Inject constructor(
             val progress = 0
 
             storageService.addMedication(Medicine(id,name,knownSideEffects,about,pillCount,currentPillCount,progress))
+        }
+    }
+
+    /* Declares a mutable state of the User type.
+        This is observed by the 'HomeScreen composable function in 'HomeScreen.kt' */
+    var user = mutableStateOf(User())
+        private set
+
+    // This function is used to inform the account service to fetch a single document relating to the current user.
+    fun getUserDetails() {
+        accountService.getUserDetails() {
+            user.value = it
         }
     }
 }

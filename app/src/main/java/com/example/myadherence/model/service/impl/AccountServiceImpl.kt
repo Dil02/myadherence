@@ -1,11 +1,13 @@
 package com.example.myadherence.model.service.impl
 
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.myadherence.model.Dose
 import com.example.myadherence.model.User
 import com.example.myadherence.model.service.AccountService
 import com.example.myadherence.screens.home.HomeViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import javax.inject.Inject
 
@@ -67,15 +69,16 @@ class AccountServiceImpl @Inject constructor() : AccountService {
             }
     }
 
-    // This function returns a User object containing the current user's information.
-    override fun getUserDetails(): User {
+
+    // This function fetches a single User document based on the current user's id.
+    override fun getUserDetails(onSuccess: (User) -> Unit){
         val id: String? = Firebase.auth.currentUser?.uid
-        val email: String? = Firebase.auth.currentUser?.email
-        if(email!=null && id!=null)
-        {
-            return User(id,email,"")
-        }
-        return User("There was no user","There was no user","There was no user")
+        Firebase.firestore.collection("users").document(id!!).get()
+            .addOnSuccessListener { document ->
+                // Transforms a single 'User' document to an object of the User type.
+                val user = document.toObject<User>()?.copy(id = document.id)
+                onSuccess(user ?: User()) // Returns the user object to where the getUserDetails function was called.
+            }
     }
 
 }
