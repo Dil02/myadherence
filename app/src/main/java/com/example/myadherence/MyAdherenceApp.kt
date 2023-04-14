@@ -114,6 +114,7 @@ fun Navigation(tempViewModel: NFCViewModel) {
             navArgument("doseID") { type = NavType.StringType}
         )) {entry ->
             DoseScreen(
+                navController = navController,
                 medicationID = entry.arguments?.getString("medicationID") ,
                 medicationName = entry.arguments?.getString("medicationName") ,
                 doseID = entry.arguments?.getString("doseID"))

@@ -12,4 +12,5 @@ class NFCViewModel() : ViewModel() {
     {
         _inputText.value = text
     }
+
 }

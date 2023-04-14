@@ -1,19 +1,27 @@
 package com.example.myadherence.screens.medication
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.myadherence.DOSE_SCREEN
 import com.example.myadherence.HOME_SCREEN
 import com.example.myadherence.MEDICATION_DOSES_SCREEN
 import com.example.myadherence.MEDICATION_SCREEN
+import com.example.myadherence.model.Dose
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.service.StorageService
 import com.example.myadherence.screens.MyAdherenceViewModel
 import com.example.myadherence.screens.home.HomeScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import javax.inject.Inject
+import kotlin.jvm.internal.Intrinsics.Kotlin
 import kotlin.math.roundToInt
 
 @HiltViewModel
@@ -59,11 +67,21 @@ class MedicationViewModel @Inject constructor(
         updateProgress()
     }
 
+    // This function updates the 'dosage' property of the medication state as the user enters a value.
+    fun onDosageChange(newValue: String) {
+        medication.value = medication.value.copy(dosage = newValue)
+    }
+
     // This private function updates the 'progress' property of the medication state.
     private fun updateProgress()
     {
+        /* Calculates the progress by dividing the currentPillCount by the medication's overall pillCount
+            multiplied by 100. Both of these values are first converted to the Double
+            type. The result is then rounded to the nearest integer.
+            Finally, this value is subtracted from 100. Note: As the currentPillCount goes down, then progress increases.
+         */
         medication.value = medication.value.copy(
-            progress = ((medication.value.currentPillCount.toDouble()/medication.value.pillCount.toDouble())*100).roundToInt())
+            progress = 100-((medication.value.currentPillCount.toDouble()/medication.value.pillCount.toDouble())*100).roundToInt())
     }
 
     // This function instructs the storage service to save the changes made to a Medicine object to Cloud Firestore.
@@ -76,7 +94,8 @@ class MedicationViewModel @Inject constructor(
                 about = medication.value.about,
                 pillCount = medication.value.pillCount,
                 currentPillCount = medication.value.currentPillCount,
-                progress = medication.value.progress
+                progress = medication.value.progress,
+                dosage = medication.value.dosage
             )
         )
     }
@@ -90,6 +109,26 @@ class MedicationViewModel @Inject constructor(
     // This function navigates to the Medication Doses screen where the user can view all the doses of a particular medication.
     fun goToMedicationDoses(navController: NavController, medicationID: String, medicationName: String) {
         navController.navigate(route = "$MEDICATION_DOSES_SCREEN/$medicationID/$medicationName")
+    }
+
+    // This function instructs the storage service to add a Dose object to Cloud Firestore.
+    fun addSkippedMedicationDose(navController: NavController,medication: Medicine ) {
+        storageService.addDose(medication.id,
+            Dose(
+                id = "",
+                status = "Skipped",
+                scheduledTime = "to do",
+                timestamp = getCurrentTimestamp(),
+                sideEffects = ""
+            )
+        )
+        navController.navigate(route = "$MEDICATION_DOSES_SCREEN/${medication.id}/${medication.name}")
+    }
+
+    // This function is used to get the current date and time.
+    private fun getCurrentTimestamp(): String {
+        val currentTime = Calendar.getInstance().time
+        return currentTime.toString()
     }
 
 }

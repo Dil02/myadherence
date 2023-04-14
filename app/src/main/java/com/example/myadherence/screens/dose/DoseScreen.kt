@@ -11,9 +11,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 @Composable
 fun DoseScreen(
+    navController: NavController,
     medicationID: String?,
     medicationName: String?,
     doseID: String?,
@@ -45,7 +47,7 @@ fun DoseScreen(
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Button(onClick = { viewModel.deleteDose(medicationID!!) }) {
+            Button(onClick = { viewModel.deleteDose(navController,medicationID!!,medicationName!!) }) {
                 Text(
                     text= "Delete Dose",
                     fontSize = 18.sp

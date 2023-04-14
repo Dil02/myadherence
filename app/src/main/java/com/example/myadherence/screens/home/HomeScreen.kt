@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.myadherence.model.Medicine
 import com.example.myadherence.screens.NFCViewModel
 
 @Composable
@@ -83,10 +84,22 @@ fun HomeScreen(
 
         Text(text=tempString.value, fontSize = 16.sp)
 
-        if(!tempString.value.equals(""))
+        // Checks to see if the content on the NFC tag is valid and displays buttons accordingly
+        // The user cannot add a mediation if it already exists.
+        if(!tempString.value.equals("") && viewModel.validateMedication(tempString.value))
         {
-            Button(onClick = { viewModel.addMedication(tempString.value)}) {
-                Text(text = "Add medication", fontSize = 16.sp)
+            // The variable 'result' will contain either an existing Medication object or null.
+            // The user can only record a dose if they have already added the Medicine to the app.
+            val result=viewModel.doesMedicationExist(tempString.value.toString().split(",")[0])
+            if(result!=null) {
+                Button(onClick = { viewModel.addMedicationDose(result)}) {
+                    Text(text = "Record dose", fontSize = 16.sp)
+                }
+            }
+            else{
+                Button(onClick = { viewModel.addMedication(tempString.value)}) {
+                    Text(text = "Add medication", fontSize = 16.sp)
+                }
             }
         }
 

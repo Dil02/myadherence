@@ -10,6 +10,7 @@ import com.example.myadherence.LEADERBOARD_SCREEN
 import com.example.myadherence.MEDICATION_SCREEN
 import com.example.myadherence.MyAdherenceActivity
 import com.example.myadherence.WELCOME_SCREEN
+import com.example.myadherence.model.Dose
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.User
 import com.example.myadherence.model.service.AccountService
@@ -17,7 +18,9 @@ import com.example.myadherence.model.service.StorageService
 import com.example.myadherence.screens.MyAdherenceViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 // Defines the Home screen ViewModel:
 @HiltViewModel
@@ -74,7 +77,7 @@ class HomeViewModel @Inject constructor(
         navController.navigate(route = "$MEDICATION_SCREEN/$medicationID")
     }
 
-    // This function adds a Medication to the application.
+    // This function adds a Medication to the application based on the contents of the NFC tag which is represented as a string.
     fun addMedication(newString: String)
     {
         val properties = newString.split(",")
@@ -85,11 +88,80 @@ class HomeViewModel @Inject constructor(
             val knownSideEffects = properties.get(1)
             val about = properties.get(2)
             val pillCount = properties.get(3).toInt()
-            val currentPillCount = properties.get(4).toInt()
+            val dosage = properties.get(4)
+            val currentPillCount = pillCount
             val progress = 0
 
-            storageService.addMedication(Medicine(id,name,knownSideEffects,about,pillCount,currentPillCount,progress))
+            storageService.addMedication(Medicine(id,name,knownSideEffects,about,pillCount,currentPillCount,progress,dosage))
         }
+    }
+
+    /* This function validates the contents of the NFC tag scanned by the user which is represented as a string.
+        Correct Format: name,knownSideEffects,about,pillCount,quantity/frequency/times/instructions */
+    fun validateMedication(newString: String): Boolean {
+
+        val properties = newString.split(",")
+        val dosageProperties = properties.get(4).split("/")
+
+        if(properties.size==5 && dosageProperties.size==4)
+        {
+            try {
+                properties.get(3).toInt() // Checks to see if the 'pillCount' string can be converted to an Int.
+                dosageProperties.get(0).toInt() // quantity
+                dosageProperties.get(1).toInt() // frequency
+            }
+            catch (e: java.lang.NumberFormatException) {
+                return false
+            }
+
+            return true
+        }
+        return false
+    }
+
+    // This function returns a Medicine object if it exists within the application based on the medication name provided.
+    fun doesMedicationExist(medicationName: String): Medicine? {
+        for(medicine in medicines)
+        {
+            if(medicine.value.name.equals(medicationName))
+                return medicine.value
+        }
+        return null
+    }
+
+    // This function instructs the storage service to add a Dose to Cloud Firestore and update a Medication object.
+    fun addMedicationDose(medication: Medicine) {
+        storageService.addDose(medication.id,
+            Dose(
+                id = "",
+                status = "Taken",
+                scheduledTime = "to do",
+                timestamp = Calendar.getInstance().time.toString(),
+                sideEffects = ""
+            )
+        )
+        // Gets 'quantity' from the dosage property.
+        val quantity = medication.dosage.split("/")[0].toInt()
+        storageService.updateMedication(
+            Medicine(
+                id = medication.id,
+                name = medication.name,
+                knownSideEffects = medication.knownSideEffects,
+                about = medication.about,
+                pillCount = medication.pillCount,
+
+                // Uses 'quantity' within the dosage property to update the currentPillCount.
+                currentPillCount = medication.currentPillCount - quantity,
+
+                /* Calculates the progress by dividing the currentPillCount (minus the quantity just taken)
+                    by the medication's overall pillCount multiplied by 100. Both of these values are first converted to the Double
+                    type. The result is then rounded to the nearest integer.
+                    Finally, this value is subtracted from 100. Note: As the currentPillCount goes down, then progress increases.
+                 */
+                progress = 100-((medication.currentPillCount - quantity).toDouble()/(medication.pillCount.toDouble())*100).roundToInt(),
+                dosage = medication.dosage
+            )
+        )
     }
 
     /* Declares a mutable state of the User type.

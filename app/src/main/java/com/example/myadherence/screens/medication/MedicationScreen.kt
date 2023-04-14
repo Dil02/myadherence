@@ -43,6 +43,7 @@ fun MedicationScreen(
         MedicineTextField(value = medication.value.knownSideEffects, onValueChange = viewModel::onKnownSideEffectsChange, label = "Known Side Effects" )
         MedicineNumberField(value = medication.value.currentPillCount.toString(), onValueChange = viewModel::onCurrentPillCountChange, label = "Current Pill Count")
         MedicineNumberField(value = medication.value.pillCount.toString(), onValueChange = viewModel::onPillCountChange, label = "Pill Count")
+        MedicineTextField(value = medication.value.dosage, onValueChange = viewModel::onDosageChange, label = "Dosage: Quantity/Frequency/Times/Instructions")
 
         Text(text = "Progress: " + medication.value.progress.toString() + "%", fontSize = 18.sp)
 
@@ -67,7 +68,14 @@ fun MedicationScreen(
         Button(onClick = { viewModel.goToMedicationDoses(navController, medication.value.id,medication.value.name) }) {
             Text(
                 text = "View Doses",
-                fontSize = 20.sp
+                fontSize = 18.sp
+            )
+        }
+
+        Button(onClick = { viewModel.addSkippedMedicationDose(navController,medication.value)}) {
+            Text(
+                text = "Record skipped dose",
+                fontSize = 18.sp
             )
         }
     }

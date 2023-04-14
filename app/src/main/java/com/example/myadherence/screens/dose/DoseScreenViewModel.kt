@@ -2,6 +2,10 @@ package com.example.myadherence.screens.dose
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.example.myadherence.DOSE_SCREEN
+import com.example.myadherence.LOGIN_SCREEN
+import com.example.myadherence.MEDICATION_DOSES_SCREEN
 import com.example.myadherence.model.Dose
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.service.StorageService
@@ -63,8 +67,9 @@ class DoseScreenViewModel @Inject constructor(
     }
 
     // This function instructs the storage service to delete a Dose object from Cloud Firestore.
-    fun deleteDose(medicationID: String)
+    fun deleteDose(navController: NavController,medicationID: String,medicationName: String)
     {
         storageService.deleteDose(medicationID,dose.value.id)
+        navController.navigate(route = "$MEDICATION_DOSES_SCREEN/$medicationID/$medicationName")
     }
 }

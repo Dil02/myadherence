@@ -25,8 +25,8 @@ class MedicationDosesScreenViewModel @Inject constructor(
         viewModelScope.launch() {
              storageService.getDoses(medicationID) {
                     doses = it
-                }
-            }
+             }
+        }
     }
 
     // This function navigates to the Dose screen where the user can view the details of a particular dose.
