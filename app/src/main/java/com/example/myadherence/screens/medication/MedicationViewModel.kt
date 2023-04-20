@@ -1,27 +1,20 @@
 package com.example.myadherence.screens.medication
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.myadherence.DOSE_SCREEN
 import com.example.myadherence.HOME_SCREEN
 import com.example.myadherence.MEDICATION_DOSES_SCREEN
-import com.example.myadherence.MEDICATION_SCREEN
 import com.example.myadherence.model.Dose
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.model.service.StorageService
 import com.example.myadherence.screens.MyAdherenceViewModel
-import com.example.myadherence.screens.home.HomeScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
+import java.util.*
 import javax.inject.Inject
-import kotlin.jvm.internal.Intrinsics.Kotlin
 import kotlin.math.roundToInt
 
 @HiltViewModel
@@ -95,7 +88,8 @@ class MedicationViewModel @Inject constructor(
                 pillCount = medication.value.pillCount,
                 currentPillCount = medication.value.currentPillCount,
                 progress = medication.value.progress,
-                dosage = medication.value.dosage
+                dosage = medication.value.dosage,
+                points = medication.value.points
             )
         )
     }
@@ -111,24 +105,32 @@ class MedicationViewModel @Inject constructor(
         navController.navigate(route = "$MEDICATION_DOSES_SCREEN/$medicationID/$medicationName")
     }
 
-    // This function instructs the storage service to add a Dose object to Cloud Firestore.
-    fun addSkippedMedicationDose(navController: NavController,medication: Medicine ) {
+    // This function instructs the storage service to add a 'Skipped' Dose object to Cloud Firestore.
+    fun addSkippedMedicationDose(navController: NavController,medication: Medicine, skippedReason: String ) {
         storageService.addDose(medication.id,
             Dose(
                 id = "",
                 status = "Skipped",
-                scheduledTime = "to do",
+                skippedReason = skippedReason,
                 timestamp = getCurrentTimestamp(),
-                sideEffects = ""
+                sideEffects = "N/A"
             )
         )
+        storageService.updateMedicationPoints(medication.id,medication.points+1) // Skipped dose awarded 1 point.
         navController.navigate(route = "$MEDICATION_DOSES_SCREEN/${medication.id}/${medication.name}")
     }
 
     // This function is used to get the current date and time.
     private fun getCurrentTimestamp(): String {
-        val currentTime = Calendar.getInstance().time
-        return currentTime.toString()
+//        val calendar = Calendar.getInstance()
+//        val year = calendar.get(Calendar.YEAR)
+//        val month = calendar.get(Calendar.MONTH) + 1 // Month is zero based.
+//        val day = calendar.get(Calendar.DAY_OF_MONTH)
+//        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+//        val minute = calendar.get(Calendar.MINUTE)
+//        val second = calendar.get(Calendar.SECOND)
+//        return "$day/$month/$year $hour:$minute:$second"
+        return Calendar.getInstance().time.toString()
     }
 
 }

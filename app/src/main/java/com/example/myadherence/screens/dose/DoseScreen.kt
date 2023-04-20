@@ -42,7 +42,7 @@ fun DoseScreen(
         DoseScreenTextField(value = dose.value.status, onValueChange = viewModel :: onStatusChange , label = "Status" )
         DoseScreenTextField(value = dose.value.sideEffects, onValueChange = viewModel :: onSideEffectsChange , label = "Experienced Side Effects" )
         DoseScreenTextField(value = dose.value.timestamp, onValueChange = viewModel :: onTimestampChange , label = "Timestamp" )
-        DoseScreenTextField(value = dose.value.scheduledTime, onValueChange = viewModel :: onScheduledTime , label = "Scheduled Time" )
+        DoseScreenTextField(value = dose.value.skippedReason, onValueChange = viewModel :: onSkippedReasonChange , label = "Skipped Reason" )
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp)

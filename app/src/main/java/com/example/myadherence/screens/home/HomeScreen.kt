@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myadherence.model.Medicine
 import com.example.myadherence.screens.NFCViewModel
+import kotlin.random.Random
 
 @Composable
 fun HomeScreen(
@@ -57,29 +58,34 @@ fun HomeScreen(
         Text(
             text = "Adherence Score: " + user.value.adherenceScore.toString(),
             fontSize = 20.sp,
-            fontStyle = FontStyle.Italic
+            fontStyle = FontStyle.Italic,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
         //adherenceCircle()
         //Spacer(modifier = Modifier.height(120.dp))
 
-        Button(
-            onClick = { viewModel.signOut(navController)},
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = "Sign Out",
-                fontSize = 18.sp
-            )
-        }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        )
+        {
+            Button(
+                onClick = { viewModel.signOut(navController)}
+            ) {
+                Text(
+                    text = "Sign Out",
+                    fontSize = 18.sp
+                )
+            }
 
-        Button (
-            onClick = { viewModel.goToLeaderboard(navController)},
-        ) {
-            Text(
-                text = "View Leaderboard",
-                fontSize = 18.sp
-            )
+            Button (
+                onClick = { viewModel.goToLeaderboard(navController)},
+            ) {
+                Text(
+                    text = "Leaderboard",
+                    fontSize = 18.sp
+                )
+            }
         }
 
         Text(text=tempString.value, fontSize = 16.sp)
@@ -160,8 +166,7 @@ fun adherenceCircle()
 }
 
 @Composable
-fun progressBar(progress: Int)
-{
+fun progressBar(progress: Int) {
     Canvas(modifier = Modifier.fillMaxWidth()) {
         drawRoundRect(
             Color(0xFFD9D9D9),
@@ -169,12 +174,22 @@ fun progressBar(progress: Int)
             size = Size(800F,100F),
             cornerRadius = CornerRadius(50F,50F)
         )
+
+//        val random = Random.nextInt(1,4)
+//
+//        var color: Long = if(random == 1) {
+//            0xFFA8CDB7 // Green
+//        } else if(random == 2) {
+//            0xFF97DBDF // Blue
+//        } else {
+//            0xFFD0B6E5 // Purple
+//        }
+
         drawRoundRect(
-            Color(0xFFA8CDB7),
+            Color(0XFFA8CDB7),
             topLeft = Offset(50F, 50F),
-            size = Size((progress*10).toFloat(),100F),
+            size = Size((progress*8).toFloat(),100F), // progress is multiplied by 8, due to rectangle width.
             cornerRadius = CornerRadius(50F,50F)
         )
-
     }
 }

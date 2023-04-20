@@ -48,9 +48,9 @@ class DoseScreenViewModel @Inject constructor(
         dose.value = dose.value.copy(timestamp = newValue)
     }
 
-    // This function updates the 'scheduledTime' property of the dose state as the user enters a value.
-    fun onScheduledTime(newValue: String) {
-        dose.value = dose.value.copy(scheduledTime = newValue)
+    // This function updates the 'skippedReason' property of the dose state as the user enters a value.
+    fun onSkippedReasonChange(newValue: String) {
+        dose.value = dose.value.copy(skippedReason = newValue)
     }
 
     // This function instructs the storage service to save the changes made to a Dose object to Cloud Firestore.
@@ -59,7 +59,7 @@ class DoseScreenViewModel @Inject constructor(
             Dose(
                 id = dose.value.id,
                 status = dose.value.status,
-                scheduledTime = dose.value.scheduledTime,
+                skippedReason = dose.value.skippedReason,
                 timestamp = dose.value.timestamp,
                 sideEffects = dose.value.sideEffects
             )

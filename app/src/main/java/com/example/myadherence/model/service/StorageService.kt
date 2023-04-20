@@ -13,6 +13,7 @@ interface StorageService {
     fun updateMedication(medication: Medicine)
     fun addMedication(medication: Medicine)
     fun deleteMedication(medicationID: String)
+    fun updateMedicationPoints(medicationID: String, points: Int)
 
     // Dose functions
     fun getDoses(medicationID: String, onSuccess: (ArrayList<Dose>) -> Unit)

@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.myadherence.screens.medication.MedicineNumberField
-import com.example.myadherence.screens.medication.MedicineTextField
+import com.example.myadherence.screens.medication.GeneralNumberField
+import com.example.myadherence.screens.medication.GeneralTextField
 
 @Composable
 fun MedicationDosesScreen(
@@ -58,7 +58,7 @@ fun MedicationDosesScreen(
                             fontSize = 18.sp
                         )
                     }
-                    Spacer(modifier = Modifier.height(60.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

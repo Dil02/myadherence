@@ -191,6 +191,19 @@ class StorageServiceImpl @Inject constructor() : StorageService {
             }
     }
 
+    // This function updates the 'points' property of a Medicine document.
+    override fun updateMedicationPoints(
+        medicationID: String,
+        points: Int
+    ) {
+        val userID = Firebase.auth.currentUser!!.uid
+        Firebase.firestore.collection("medicines").document(userID)
+            .collection("Medicine").document(medicationID).update("points",points)
+            .addOnSuccessListener {
+                println("Written Successfully")
+            }
+    }
+
 }
 
 /* So essentially you do not modify the local state, instead you make changes (write) to the collection and documents on Firestore,

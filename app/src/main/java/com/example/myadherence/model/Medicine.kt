@@ -8,5 +8,6 @@ data class Medicine (
     val pillCount: Int = 0,
     val currentPillCount: Int = 0,
     val progress: Int = 0,
-    val dosage: String = ""
+    val dosage: String = "",
+    val points: Int = 0
 )

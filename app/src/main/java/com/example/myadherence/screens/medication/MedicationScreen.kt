@@ -6,9 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,11 +37,11 @@ fun MedicationScreen(
     ) {
         Text(text = medication.value.name, fontSize = 26.sp)
 
-        MedicineTextField(value = medication.value.about, onValueChange = viewModel::onAboutChange, label = "About")
-        MedicineTextField(value = medication.value.knownSideEffects, onValueChange = viewModel::onKnownSideEffectsChange, label = "Known Side Effects" )
-        MedicineNumberField(value = medication.value.currentPillCount.toString(), onValueChange = viewModel::onCurrentPillCountChange, label = "Current Pill Count")
-        MedicineNumberField(value = medication.value.pillCount.toString(), onValueChange = viewModel::onPillCountChange, label = "Pill Count")
-        MedicineTextField(value = medication.value.dosage, onValueChange = viewModel::onDosageChange, label = "Dosage: Quantity/Frequency/Times/Instructions")
+        GeneralTextField(value = medication.value.about, onValueChange = viewModel::onAboutChange, label = "About")
+        GeneralTextField(value = medication.value.knownSideEffects, onValueChange = viewModel::onKnownSideEffectsChange, label = "Known Side Effects" )
+        GeneralNumberField(value = medication.value.currentPillCount.toString(), onValueChange = viewModel::onCurrentPillCountChange, label = "Current Pill Count")
+        GeneralNumberField(value = medication.value.pillCount.toString(), onValueChange = viewModel::onPillCountChange, label = "Pill Count")
+        GeneralTextField(value = medication.value.dosage, onValueChange = viewModel::onDosageChange, label = "Dosage: Quantity/Frequency/Times/Instructions")
 
         Text(text = "Progress: " + medication.value.progress.toString() + "%", fontSize = 18.sp)
 
@@ -72,17 +70,23 @@ fun MedicationScreen(
             )
         }
 
-        Button(onClick = { viewModel.addSkippedMedicationDose(navController,medication.value)}) {
-            Text(
-                text = "Record skipped dose",
-                fontSize = 18.sp
-            )
+        var skippedReason by remember {mutableStateOf("")}
+        GeneralTextField(value = skippedReason , onValueChange = {skippedReason = it} , label = "Provide reason for skipping dose" )
+
+        if(skippedReason.length > 3)
+        {
+            Button(onClick = {viewModel.addSkippedMedicationDose(navController,medication.value,skippedReason)}) {
+                Text(
+                    text = "Record skipped dose",
+                    fontSize = 18.sp
+                )
+            }
         }
     }
 }
 
 @Composable
-fun MedicineTextField(value: String, onValueChange: (String) -> Unit, label: String)
+fun GeneralTextField(value: String, onValueChange: (String) -> Unit, label: String)
 {
     TextField(
         value= value,
@@ -93,7 +97,7 @@ fun MedicineTextField(value: String, onValueChange: (String) -> Unit, label: Str
 }
 
 @Composable
-fun MedicineNumberField(value: String, onValueChange: (String) -> Unit, label: String)
+fun GeneralNumberField(value: String, onValueChange: (String) -> Unit, label: String)
 {
     TextField(
         value = value,

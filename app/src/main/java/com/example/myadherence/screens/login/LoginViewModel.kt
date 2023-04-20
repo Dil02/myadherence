@@ -39,13 +39,11 @@ class LoginViewModel @Inject constructor(
     // This function navigates to the Home Screen if a user is successfully authenticated.
     fun login(navController: NavController){
         accountService.authenticate(email,password) { error ->
-            if(error==null)
-            {
+            if(error==null) {
                 println("Logged in successfully")
                 navController.navigate(route = HOME_SCREEN) {popUpTo(LOGIN_SCREEN) {inclusive=true} }
             }
-            else
-            {
+            else {
                 println("The error is ' ${error.message}'")
             }
         }

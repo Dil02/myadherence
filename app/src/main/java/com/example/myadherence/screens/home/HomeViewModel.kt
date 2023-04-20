@@ -69,6 +69,7 @@ class HomeViewModel @Inject constructor(
 
     // This function navigates to the Leaderboard screen.
     fun goToLeaderboard(navController: NavController) {
+        calculateAdherenceScore()
         navController.navigate(route = LEADERBOARD_SCREEN)
     }
 
@@ -91,8 +92,9 @@ class HomeViewModel @Inject constructor(
             val dosage = properties.get(4)
             val currentPillCount = pillCount
             val progress = 0
+            val points = 0
 
-            storageService.addMedication(Medicine(id,name,knownSideEffects,about,pillCount,currentPillCount,progress,dosage))
+            storageService.addMedication(Medicine(id,name,knownSideEffects,about,pillCount,currentPillCount,progress,dosage,points))
         }
     }
 
@@ -101,10 +103,10 @@ class HomeViewModel @Inject constructor(
     fun validateMedication(newString: String): Boolean {
 
         val properties = newString.split(",")
-        val dosageProperties = properties.get(4).split("/")
 
-        if(properties.size==5 && dosageProperties.size==4)
+        if(properties.size==5 && properties.get(4).split("/").size==4)
         {
+            val dosageProperties = properties.get(4).split("/")
             try {
                 properties.get(3).toInt() // Checks to see if the 'pillCount' string can be converted to an Int.
                 dosageProperties.get(0).toInt() // quantity
@@ -129,13 +131,13 @@ class HomeViewModel @Inject constructor(
         return null
     }
 
-    // This function instructs the storage service to add a Dose to Cloud Firestore and update a Medication object.
+    // This function instructs the storage service to add a 'Taken' Dose object to Cloud Firestore and update a Medication object.
     fun addMedicationDose(medication: Medicine) {
         storageService.addDose(medication.id,
             Dose(
                 id = "",
                 status = "Taken",
-                scheduledTime = "to do",
+                skippedReason = "N/A",
                 timestamp = Calendar.getInstance().time.toString(),
                 sideEffects = ""
             )
@@ -159,7 +161,8 @@ class HomeViewModel @Inject constructor(
                     Finally, this value is subtracted from 100. Note: As the currentPillCount goes down, then progress increases.
                  */
                 progress = 100-((medication.currentPillCount - quantity).toDouble()/(medication.pillCount.toDouble())*100).roundToInt(),
-                dosage = medication.dosage
+                dosage = medication.dosage,
+                points = medication.points + 2 // 2 points awarded for 'Taken' Dose.
             )
         )
     }
@@ -174,5 +177,17 @@ class HomeViewModel @Inject constructor(
         accountService.getUserDetails() {
             user.value = it
         }
+    }
+
+    /* This function calculates the user's adherence score. This is performed by adding all the points
+        of each medication together and then dividing by the number of medications. The result is rounded
+        to the nearest integer. */
+    private fun calculateAdherenceScore() {
+        var totalPoints = 0
+        for(medicine in medicines) {
+            totalPoints += medicine.value.points
+        }
+        var adherenceScore = (totalPoints.toDouble()/medicines.values.toList().size.toDouble()).roundToInt()
+        accountService.updateAdherenceScore(accountService.getUserID(),adherenceScore)
     }
 }

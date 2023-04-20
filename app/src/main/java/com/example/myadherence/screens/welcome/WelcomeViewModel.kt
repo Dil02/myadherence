@@ -12,7 +12,7 @@ import javax.inject.Inject
 // Defines the Welcome Screen ViewModel:
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
-    private val accountService: AccountService
+    private val accountService: AccountService // Injecting 'AccountService' as a dependency.
 ) : MyAdherenceViewModel() {
 
     // This function is used to navigate to the login screen.
