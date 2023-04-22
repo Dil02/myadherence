@@ -38,6 +38,7 @@ class LoginViewModel @Inject constructor(
 
     // This function navigates to the Home Screen if a user is successfully authenticated.
     fun login(navController: NavController){
+        if(!validateFields()) return
         accountService.authenticate(email,password) { error ->
             if(error==null) {
                 println("Logged in successfully")
@@ -45,7 +46,17 @@ class LoginViewModel @Inject constructor(
             }
             else {
                 println("The error is ' ${error.message}'")
+                uiState.value = uiState.value.copy(errorMessage = error.message.toString())
             }
         }
+    }
+
+    // This function checks to see if the values entered by the user are valid.
+    private fun validateFields(): Boolean {
+        if(email.equals("") || password.equals("")) {
+            uiState.value = uiState.value.copy(errorMessage = "Please ensure fields are not blank.")
+            return false
+        }
+        return true
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -13,20 +14,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.myadherence.model.Medicine
 import com.example.myadherence.screens.NFCViewModel
-import kotlin.random.Random
+
 
 @Composable
 fun HomeScreen(
@@ -51,19 +62,36 @@ fun HomeScreen(
 
         Text(
             text = "Hi " + user.value.nickname,
-            fontSize = 16.sp,
+            fontSize = 17.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
+        Spacer(modifier = Modifier.height(10.dp))
 
-        Text(
-            text = "Adherence Score: " + user.value.adherenceScore.toString(),
-            fontSize = 20.sp,
+        Text(modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(16.dp)
+            .drawBehind {
+                drawCircle(
+                    //Color(0xFFD6969D),
+                    Color(214, 150, 157, 55),
+                    radius = 55.dp.toPx()
+                )
+            },
+            text = user.value.adherenceScore.toString(),
+            fontSize = 35.sp,
             fontStyle = FontStyle.Italic,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            //color = Color.White
         )
 
-        //adherenceCircle()
-        //Spacer(modifier = Modifier.height(120.dp))
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = "Adherence Score",
+            fontSize = 18.sp,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.SemiBold
+        )
+        Spacer(modifier = Modifier.height(5.dp))
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -88,12 +116,12 @@ fun HomeScreen(
             }
         }
 
-        Text(text=tempString.value, fontSize = 16.sp)
-
         // Checks to see if the content on the NFC tag is valid and displays buttons accordingly
         // The user cannot add a mediation if it already exists.
         if(!tempString.value.equals("") && viewModel.validateMedication(tempString.value))
         {
+            //Text(text=tempString.value, fontSize = 16.sp)
+            displayMedicationInfo(text = tempString.value)
             // The variable 'result' will contain either an existing Medication object or null.
             // The user can only record a dose if they have already added the Medicine to the app.
             val result=viewModel.doesMedicationExist(tempString.value.toString().split(",")[0])
@@ -102,17 +130,22 @@ fun HomeScreen(
                     Text(text = "Record dose", fontSize = 16.sp)
                 }
             }
-            else{
+            else {
                 Button(onClick = { viewModel.addMedication(tempString.value)}) {
                     Text(text = "Add medication", fontSize = 16.sp)
                 }
             }
         }
+        else
+        {
+            Text(text = "Invalid NFC tag detected.", fontSize = 17.sp)
+        }
 
         Text(
             text = "Medication Progress",
-            fontSize = 20.sp,
-            fontStyle = FontStyle.Italic
+            fontSize = 18.sp,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.SemiBold
         )
 
         // Creates a vertically scrolling list.
@@ -129,7 +162,7 @@ fun HomeScreen(
                         color = Color.Black
                     )
                 }
-                progressBar(progress = medicine.progress)
+                ProgressBar(progress = medicine.progress)
                 Spacer(modifier = Modifier.height(60.dp))
             }
         }
@@ -151,22 +184,27 @@ fun HomeScreen(
 }
 
 @Composable
-fun adherenceCircle()
-{
-    Canvas(modifier = Modifier.fillMaxWidth()) {
-        drawCircle(
-            Color(0xFFD6969D),
-            center = Offset(
-                170.dp.toPx(),
-                55.dp.toPx()
-            ),
-            radius = 60.dp.toPx()
-        )
+fun displayMedicationInfo(text: String) {
+    val properties = text.split(",")
+    val dosageProperties = properties[4].split("/")
+    LazyRow(
+        horizontalArrangement =
+            Arrangement.spacedBy(10.dp)
+    )
+    {
+        item {Text(text = "Name: ${properties[0]}", fontSize = 17.sp)}
+        item {Text(text = "Side Effects: ${properties[1]}", fontSize = 17.sp)}
+        item {Text(text = "About: ${properties[2]}", fontSize = 17.sp)}
+        item {Text(text = "Pill Count: ${properties[3]}", fontSize = 17.sp)}
+        item {Text(text = "Dose quantity: ${dosageProperties[0]}", fontSize = 17.sp)}
+        item {Text(text = "Frequency: ${dosageProperties[1]}", fontSize = 17.sp)}
+        item {Text(text = "Time: ${dosageProperties[2]}", fontSize = 17.sp)}
+        item {Text(text = "Instructions: ${dosageProperties[3]}", fontSize = 17.sp)}
     }
 }
 
 @Composable
-fun progressBar(progress: Int) {
+fun ProgressBar(progress: Int) {
     Canvas(modifier = Modifier.fillMaxWidth()) {
         drawRoundRect(
             Color(0xFFD9D9D9),

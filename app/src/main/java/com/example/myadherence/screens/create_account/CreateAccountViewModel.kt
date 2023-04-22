@@ -24,6 +24,9 @@ class CreateAccountViewModel @Inject constructor(
     private val password
         get() = uiState.value.password
 
+    private val confirmPassword
+        get() = uiState.value.confirmPassword
+
     private val nickname
         get() = uiState.value.nickname
 
@@ -49,6 +52,7 @@ class CreateAccountViewModel @Inject constructor(
 
     // This function creates an account for the user using the email and password they have provided and navigates to the home screen.
     fun registerAccount(navController: NavController){
+        if(!validateFields()) return
         accountService.register(email,password,nickname) { error ->
             if(error==null)
             {
@@ -58,8 +62,26 @@ class CreateAccountViewModel @Inject constructor(
             else
             {
                 println("The error is ' ${error.message}'")
+                uiState.value = uiState.value.copy(errorMessage = error.message.toString())
             }
         }
+    }
+
+    // This function checks to see if the values entered by the user are valid.
+    private fun validateFields(): Boolean {
+        if(nickname.equals("") || email.equals("") || password.equals("") || confirmPassword.equals("")) {
+            uiState.value = uiState.value.copy(errorMessage = "Please ensure fields are not blank.")
+            return false
+        }
+        else if(!password.equals(confirmPassword)) {
+            uiState.value = uiState.value.copy(errorMessage = "Ensure passwords match.")
+            return false
+        }
+        else if(password.length<6) {
+            uiState.value = uiState.value.copy(errorMessage = "Password must be longer than 6 characters.")
+            return false
+        }
+        return true
     }
 
 }

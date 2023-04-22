@@ -1,6 +1,5 @@
 package com.example.myadherence.screens.medication
 
-import android.widget.NumberPicker.OnValueChangeListener
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -9,6 +8,8 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +25,9 @@ fun MedicationScreen(
     // Declares and initialises the state observed by the composable.
     val medication = viewModel.medication
 
+    // Declares and initialises another state observed by the composable.
+    val errorMessage = viewModel.errorMessage
+
     // Calls the initialise function when composition is started.
     LaunchedEffect(Unit) {
         if (medicationID != null) {
@@ -35,7 +39,11 @@ fun MedicationScreen(
         modifier = Modifier.padding(32.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(text = medication.value.name, fontSize = 26.sp)
+        Text(text = medication.value.name, fontSize = 21.sp,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
 
         GeneralTextField(value = medication.value.about, onValueChange = viewModel::onAboutChange, label = "About")
         GeneralTextField(value = medication.value.knownSideEffects, onValueChange = viewModel::onKnownSideEffectsChange, label = "Known Side Effects" )
@@ -61,13 +69,13 @@ fun MedicationScreen(
                     fontSize = 16.sp
                 )
             }
-        }
 
-        Button(onClick = { viewModel.goToMedicationDoses(navController, medication.value.id,medication.value.name) }) {
-            Text(
-                text = "View Doses",
-                fontSize = 18.sp
-            )
+            Button(onClick = { viewModel.goToMedicationDoses(navController, medication.value.id,medication.value.name) }) {
+                Text(
+                    text = "Doses",
+                    fontSize = 16.sp
+                )
+            }
         }
 
         var skippedReason by remember {mutableStateOf("")}
@@ -81,6 +89,10 @@ fun MedicationScreen(
                     fontSize = 18.sp
                 )
             }
+        }
+
+        if(!errorMessage.value.equals("")) {
+            Text(text = errorMessage.value, fontSize = 18.sp)
         }
     }
 }

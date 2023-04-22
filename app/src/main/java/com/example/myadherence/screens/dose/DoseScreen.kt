@@ -6,7 +6,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,7 +39,10 @@ fun DoseScreen(
     ) {
         Text(
             text = medicationName!! + " Dose",
-            fontSize = 24.sp
+            fontSize = 21.sp,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
         DoseScreenTextField(value = dose.value.status, onValueChange = viewModel :: onStatusChange , label = "Status" )

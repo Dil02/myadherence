@@ -27,6 +27,10 @@ class MedicationViewModel @Inject constructor(
     var medication = mutableStateOf(Medicine())
         private set
 
+    // Declares a mutable state.
+    var errorMessage = mutableStateOf(String())
+        private set
+
     // This function is used to inform the storage service to fetch a single medication document from Cloud Firestore.
     fun initialise(medicationID: String) {
         viewModelScope.launch() {
@@ -79,6 +83,7 @@ class MedicationViewModel @Inject constructor(
 
     // This function instructs the storage service to save the changes made to a Medicine object to Cloud Firestore.
     fun updateMedication() {
+        if(!validateFields()) return
         storageService.updateMedication(
             Medicine(
                 id = medication.value.id,
@@ -133,4 +138,35 @@ class MedicationViewModel @Inject constructor(
         return Calendar.getInstance().time.toString()
     }
 
+    // This function checks to see if the values entered by the user are valid.
+    private fun validateFields(): Boolean {
+
+        val dosageProperties = medication.value.dosage.split("/")
+
+        if(medication.value.about.equals("") || medication.value.knownSideEffects.equals("")
+            || medication.value.dosage.equals("")) {
+            errorMessage.value = "Please ensure fields are not blank."
+            return false
+        }
+        else if(medication.value.pillCount< medication.value.currentPillCount) {
+            errorMessage.value = "Pill count must be equal to or greater than current pill count."
+            return false
+        }
+        else if(dosageProperties.size!=4) {
+            errorMessage.value = "The dosage value is not of the correct length."
+            return false
+        }
+        try {
+            val value1 = dosageProperties[0].toInt()
+            val value2 = dosageProperties[1].toInt()
+            if(value1 <=0 || value2 <=0) throw java.lang.NumberFormatException()
+
+        }
+        catch (e: java.lang.NumberFormatException) {
+            errorMessage.value = "The quantity and frequency values should be integers greater than 0."
+            return false
+        }
+        errorMessage.value=""
+        return true
+    }
 }

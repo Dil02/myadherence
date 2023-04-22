@@ -1,6 +1,6 @@
 package com.example.myadherence.screens.welcome
 
-import android.graphics.Paint.Style
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.myadherence.R
 
 
 // Welcome screen composable:
@@ -28,17 +29,24 @@ fun WelcomeScreen(
         //verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(100.dp))
         Text(
             text = "MyAdherence",
             fontSize = 31.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             fontStyle = FontStyle.Italic,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(vertical = 100.dp)
         )
 
-        //Image(painter = painterResource(R.drawable.pillsbottle), contentDescription = null)
+        Spacer(modifier = Modifier.height(10.dp))
+        Image(painter = painterResource(R.drawable.pillsbottle), contentDescription = null)
+
+        /* Image source:
+        <a href="https://www.flaticon.com/free-icons/pills" title="pills icons">Pills icons created by ghost_icon - Flaticon</a>
+        */
+
+        Spacer(modifier = Modifier.height(30.dp))
 
         // Login button:
         Button(
@@ -50,6 +58,8 @@ fun WelcomeScreen(
                 fontSize = 16.sp
             )
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Register button:
         Button(

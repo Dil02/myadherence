@@ -5,5 +5,6 @@ data class CreateAccountUiState(
     val email: String = "",
     val password: String= "",
     val confirmPassword: String= "",
-    val nickname: String = ""
+    val nickname: String = "",
+    val errorMessage: String = ""
 )
