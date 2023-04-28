@@ -79,7 +79,11 @@ fun MedicationScreen(
         }
 
         var skippedReason by remember {mutableStateOf("")}
-        GeneralTextField(value = skippedReason , onValueChange = {skippedReason = it} , label = "Provide reason for skipping dose" )
+
+        // Only if the progress value is less than 100 can the user record a skipped dose.
+        if(medication.value.progress<100) {
+            GeneralTextField(value = skippedReason , onValueChange = {skippedReason = it} , label = "Provide reason for skipping dose" )
+        }
 
         if(skippedReason.length > 3)
         {

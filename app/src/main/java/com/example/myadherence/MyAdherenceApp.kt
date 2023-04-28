@@ -37,30 +37,23 @@ import dagger.hilt.android.HiltAndroidApp
 
 // Main app composable:
 @Composable
-fun MyAdherenceApp(tempViewModel: NFCViewModel){
+fun MyAdherenceApp(nfcViewModel: NFCViewModel){
     MyAdherenceTheme {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            Navigation(tempViewModel)
+            Navigation(nfcViewModel)
         }
     }
 }
 
 // Navigation composable:
 @Composable
-fun Navigation(tempViewModel: NFCViewModel) {
+fun Navigation(nfcViewModel: NFCViewModel) {
     // NavController is the API used for navigation.
     val navController = rememberNavController()
-
-    // Because of the way I am doing the hiltViewModel the home screen has to call getUserDetails everytime it recomposes.
-    // Defining the relevant ViewModels:
-//    val viewModel = hiltViewModel<CreateAccountViewModel>()
-//    val viewModel1 = hiltViewModel<HomeViewModel>()
-//    val viewModel2 = hiltViewModel<LoginViewModel>()
-//    val viewModel3 = hiltViewModel<WelcomeViewModel>()
 
     // NavHost links the NavController with the navigation graph.
     NavHost(navController = navController, startDestination = WELCOME_SCREEN) {
@@ -69,15 +62,14 @@ fun Navigation(tempViewModel: NFCViewModel) {
             CreateAccountScreen(navController = navController)
         }
         composable(route = HOME_SCREEN) {
-            HomeScreen(navController = navController, tempViewModel = tempViewModel)
+            HomeScreen(navController = navController, nfcViewModel = nfcViewModel)
         }
         composable(route = LOGIN_SCREEN) {
             LoginScreen(navController = navController)
         }
         composable(route = WELCOME_SCREEN) {
             if(Firebase.auth.currentUser?.uid != null) {
-                HomeScreen(navController,tempViewModel)
-                //HomeScreen(navController,viewModel1)
+                HomeScreen(navController,nfcViewModel)
             }
             else
             {

@@ -26,12 +26,8 @@ fun DoseScreen(
 ){
     val dose = viewModel.dose
 
-    // Calls the initialise function when composition is started.
-    LaunchedEffect(Unit) {
-        if (medicationID != null && doseID !=null) {
-            viewModel.initialise(medicationID,doseID)
-        }
-    }
+    // Declares and initialises another state observed by the composable.
+    val errorMessage = viewModel.errorMessage
 
     Column(
         modifier = Modifier.padding(32.dp),
@@ -67,6 +63,17 @@ fun DoseScreen(
             }
         }
 
+        if(!errorMessage.value.equals("")) {
+            Text(text = errorMessage.value, fontSize = 18.sp)
+        }
+
+    }
+
+    // Calls the initialise function when composition is started.
+    LaunchedEffect(Unit) {
+        if (medicationID != null && doseID !=null) {
+            viewModel.initialise(medicationID,doseID)
+        }
     }
 }
 

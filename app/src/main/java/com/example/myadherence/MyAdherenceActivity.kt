@@ -29,13 +29,13 @@ import dagger.hilt.android.HiltAndroidApp
 @AndroidEntryPoint // Enables Hilt to be able to provide dependencies
 // The main activity
 class MyAdherenceActivity : ComponentActivity() {
-    val tempViewModel: NFCViewModel by viewModels() // View Model created here so it can be updated by 'onNewIntent()' and observed by HomeScreen.
+    val nfcViewModel: NFCViewModel by viewModels() // View Model created here so it can be updated by 'onNewIntent()' and observed by HomeScreen.
 
     // This function is called when the activity is created and initialises 'MyAdherenceApp'.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyAdherenceApp(tempViewModel)
+            MyAdherenceApp(nfcViewModel)
         }
     }
 
@@ -56,10 +56,9 @@ class MyAdherenceActivity : ComponentActivity() {
                 else {
                     data=""
                 }
-                tempViewModel.onInputTextChange(data) // Updates the NFCViewModel which can be accessed by the HomeScreen.
+                nfcViewModel.onInputTextChange(data) // Updates the NFCViewModel which can be accessed by the HomeScreen.
             }
         }
     }
 
-    //ADD FOREGROUND DISPATCH!!
 }

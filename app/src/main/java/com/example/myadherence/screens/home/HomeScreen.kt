@@ -42,15 +42,15 @@ import com.example.myadherence.screens.NFCViewModel
 @Composable
 fun HomeScreen(
     navController: NavController,
-    tempViewModel: NFCViewModel,
+    nfcViewModel: NFCViewModel,
     viewModel: HomeViewModel = hiltViewModel()
 ){
 
     // Declares and initialises the state observed by the composable.
     val medicines = viewModel.medicines
 
-    //DELETE:
-    val tempString = tempViewModel.inputText
+    // String value retrieved from NFC tag.
+    val nfcString = nfcViewModel.inputText
 
     // Declares and initialises the state observed by the composable.
     val user = viewModel.user
@@ -118,25 +118,28 @@ fun HomeScreen(
 
         // Checks to see if the content on the NFC tag is valid and displays buttons accordingly
         // The user cannot add a mediation if it already exists.
-        if(!tempString.value.equals("") && viewModel.validateMedication(tempString.value))
+        if(!nfcString.value.equals("") && viewModel.validateNFCString(nfcString.value))
         {
             //Text(text=tempString.value, fontSize = 16.sp)
-            displayMedicationInfo(text = tempString.value)
+            displayMedicationInfo(text = nfcString.value)
             // The variable 'result' will contain either an existing Medication object or null.
             // The user can only record a dose if they have already added the Medicine to the app.
-            val result=viewModel.doesMedicationExist(tempString.value.toString().split(",")[0])
-            if(result!=null) {
+            val result=viewModel.doesMedicationExist(nfcString.value.toString().split(",")[0])
+            if(result!=null && result.progress==100) {
+                Text(text = "Progress for this medication has already reached 100%.", fontSize = 17.sp)
+            }
+            else if(result!=null) {
                 Button(onClick = { viewModel.addMedicationDose(result)}) {
                     Text(text = "Record dose", fontSize = 16.sp)
                 }
             }
             else {
-                Button(onClick = { viewModel.addMedication(tempString.value)}) {
+                Button(onClick = { viewModel.addMedication(nfcString.value)}) {
                     Text(text = "Add medication", fontSize = 16.sp)
                 }
             }
         }
-        else
+        else if(!nfcString.value.equals(""))
         {
             Text(text = "Invalid NFC tag detected.", fontSize = 17.sp)
         }
@@ -212,16 +215,6 @@ fun ProgressBar(progress: Int) {
             size = Size(800F,100F),
             cornerRadius = CornerRadius(50F,50F)
         )
-
-//        val random = Random.nextInt(1,4)
-//
-//        var color: Long = if(random == 1) {
-//            0xFFA8CDB7 // Green
-//        } else if(random == 2) {
-//            0xFF97DBDF // Blue
-//        } else {
-//            0xFFD0B6E5 // Purple
-//        }
 
         drawRoundRect(
             Color(0XFFA8CDB7),

@@ -85,22 +85,31 @@ class AccountServiceImpl @Inject constructor() : AccountService {
             }
     }
 
-    // This function fetches all the User documents. NEED TO CHANGE THIS FUNCTION POTENTIALLY!!!!
-    override fun getUsers(onDocumentEvent: (User) -> Unit) {
-        Firebase.firestore.collection("users").orderBy("adherenceScore",com.google.firebase.firestore.Query.Direction.ASCENDING).get()
+
+    // This function fetches all the User documents.
+    override fun getUsers(onSuccess: (ArrayList<User>) -> Unit) {
+
+        var users = ArrayList<User>()
+
+        Firebase.firestore.collection("users")
+            .orderBy("adherenceScore",com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    val user = document.toObject<User>().copy(id = document.id)
-                    onDocumentEvent(user)
+                    /* Each document in the collection is transformed into a User object and then added
+                        to the 'users' arraylist.*/
+                    users.add(document.toObject<User>().copy(id = document.id))
                 }
+                onSuccess(users ?: ArrayList<User>()) // Returns an arraylist containing all the documents as User objects.
             }
     }
+
 
     // This function updates the 'optOutLeaderboard' property of a single User document based on the userID and value provided.
     override fun updateLeaderboardPreference(userID: String, value: Boolean) {
         Firebase.firestore.collection("users").document(userID).update("optOutLeaderboard",value)
             .addOnSuccessListener {
-                println("Written successfully")
+                println("Updated preference successfully")
             }
     }
 

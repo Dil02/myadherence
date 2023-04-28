@@ -24,6 +24,10 @@ class DoseScreenViewModel @Inject constructor(
     var dose = mutableStateOf(Dose())
         private set
 
+    // Declares a mutable state.
+    var errorMessage = mutableStateOf(String())
+        private set
+
     // This function is used to inform the storage service to fetch a single dose document from Cloud Firestore.
     fun initialise(medicationID: String, doseID: String) {
         viewModelScope.launch {
@@ -55,6 +59,7 @@ class DoseScreenViewModel @Inject constructor(
 
     // This function instructs the storage service to save the changes made to a Dose object to Cloud Firestore.
     fun updateDose(medicationID: String) {
+        if(!validateFields()) return
         storageService.updateDose(medicationID,
             Dose(
                 id = dose.value.id,
@@ -71,5 +76,27 @@ class DoseScreenViewModel @Inject constructor(
     {
         storageService.deleteDose(medicationID,dose.value.id)
         navController.navigate(route = "$MEDICATION_DOSES_SCREEN/$medicationID/$medicationName")
+    }
+
+    // This function checks to see if the values entered by the user are valid.
+    private fun validateFields(): Boolean {
+        if(!dose.value.status.equals("Taken") && !dose.value.status.equals("Skipped")) {
+            errorMessage.value = "Dose status must be either 'Taken' or 'Skipped'."
+            return false
+        }
+        else if(dose.value.timestamp.equals("")) {
+            errorMessage.value = "Timestamp must not be blank."
+            return false
+        }
+        else if(dose.value.status.equals("Taken") && !dose.value.skippedReason.equals("N/A")) {
+            errorMessage.value = "Dose status is 'Taken', skipped reason must be 'N/A'."
+            return false
+        }
+        else if(dose.value.status.equals("Skipped") && dose.value.skippedReason.equals("")) {
+            errorMessage.value = "Dose status is 'Skipped', skipped reason must not be blank."
+            return false
+        }
+        errorMessage.value = ""
+        return true
     }
 }

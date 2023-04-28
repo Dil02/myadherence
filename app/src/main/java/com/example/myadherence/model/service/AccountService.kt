@@ -11,7 +11,7 @@ interface AccountService {
     fun signOut()
     fun getUserDetails(onSuccess: (User) -> Unit)
     fun getUserID(): String
-    fun getUsers(onDocumentEvent: (User) -> Unit)
     fun updateLeaderboardPreference(userID: String, value: Boolean)
     fun updateAdherenceScore(userID: String, value: Int)
+    fun getUsers(onSuccess: (ArrayList<User>) -> Unit)
 }

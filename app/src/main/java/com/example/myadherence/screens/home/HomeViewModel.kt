@@ -100,7 +100,7 @@ class HomeViewModel @Inject constructor(
 
     /* This function validates the contents of the NFC tag scanned by the user which is represented as a string.
         Correct Format: name,knownSideEffects,about,pillCount,quantity/frequency/times/instructions */
-    fun validateMedication(newString: String): Boolean {
+    fun validateNFCString(newString: String): Boolean {
 
         val properties = newString.split(",")
 

@@ -15,8 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.myadherence.screens.medication.GeneralNumberField
-import com.example.myadherence.screens.medication.GeneralTextField
+
 
 @Composable
 fun MedicationDosesScreen(
@@ -28,29 +27,28 @@ fun MedicationDosesScreen(
 {
     val doses = viewModel.doses
 
-    // Calls the initialise function when composition is started.
-    LaunchedEffect(Unit) {
-        if (medicationID != null) {
-            viewModel.initialise(medicationID)
-        }
-    }
-
     Column(
-        modifier = Modifier.padding(32.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.padding(32.dp).fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
 
         Text(
-            text = medicationName!!,
+            text = medicationName!! + " Doses",
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             fontSize = 21.sp,
             fontStyle = FontStyle.Italic,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            fontWeight = FontWeight.SemiBold
         )
 
+        Spacer(modifier = Modifier.height(3.dp))
 
-        Text(text = "Taken Doses", fontSize = 18.sp, fontStyle = FontStyle.Italic)
-        Spacer(modifier = Modifier.height(10.dp))
+        if(doses.isEmpty()) {
+            Text(text = "No doses recorded.", fontSize = 18.sp)
+        }
+
+        if(doses.isNotEmpty()) {
+            Text(text = "Taken Doses", fontSize = 18.sp, fontStyle = FontStyle.Italic)
+        }
 
         // Displays Doses which have been recorded as 'Taken':
         LazyColumn{
@@ -63,13 +61,15 @@ fun MedicationDosesScreen(
                             fontSize = 18.sp
                         )
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Spacer(modifier = Modifier.height(5.dp))
                 }
             }
         }
 
-        Text(text = "Skipped Doses", fontSize = 18.sp, fontStyle = FontStyle.Italic)
-        Spacer(modifier = Modifier.height(10.dp))
+        if(doses.isNotEmpty()) {
+            Text(text = "Skipped Doses", fontSize = 18.sp, fontStyle = FontStyle.Italic)
+        }
 
         // Displays Doses which have been recorded as 'Skipped':
         LazyColumn{
@@ -82,10 +82,18 @@ fun MedicationDosesScreen(
                             fontSize = 18.sp
                         )
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Spacer(modifier = Modifier.height(5.dp))
                 }
             }
         }
-
     }
+
+    // Calls the initialise function when composition is started.
+    LaunchedEffect(Unit) {
+        if (medicationID != null) {
+            viewModel.initialise(medicationID)
+        }
+    }
+
 }
