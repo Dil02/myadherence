@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-// This file can be deleted I think.
+
 class MainActivity : ComponentActivity() {
 
     private lateinit var auth: FirebaseAuth //Declares an instance of FirebaseAuth

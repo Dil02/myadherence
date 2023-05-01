@@ -48,7 +48,7 @@ class MyAdherenceActivity : ComponentActivity() {
             intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages ->
                 val messages: List<NdefMessage> = rawMessages.map { it as NdefMessage }
 
-                // Process the messages array.
+                // Processes the messages array.
                 var data: String =(String(messages[0].getRecords()[0].getPayload()))
                 if(data.length>3) {
                     data=data.substring(3,data.length) // Removes the language code ' en' from the string.

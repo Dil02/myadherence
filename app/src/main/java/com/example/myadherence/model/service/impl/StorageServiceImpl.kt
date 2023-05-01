@@ -205,8 +205,3 @@ class StorageServiceImpl @Inject constructor() : StorageService {
     }
 
 }
-
-/* So essentially you do not modify the local state, instead you make changes (write) to the collection and documents on Firestore,
-and the listener will notice these changes and update the local state. Composable functions notice that the
-state has been updated and recompose themselves.
-*/
